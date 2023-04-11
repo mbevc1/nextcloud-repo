@@ -1,0 +1,101 @@
+name: Pipeline
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    #branches: [ main ]
+    tags: 'v*'
+  #pull_request:
+  #  branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch: {}
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-20.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+        name: Checkout packaging repo
+        with:
+          repository: mbevc1/nextcloud
+
+      - name: Get TAG
+        run : |
+          echo ${{ github.event.release.tag_name }}
+          echo ${{ github.event.ref }}
+          echo ${GITHUB_REF/refs\/tags\/v/}
+          echo ${GITHUB_REF#refs/tags/v}
+          echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+
+      # Runs a set of commands using the runners shell
+      - name: Make package
+        env:
+          VERSION: ${{ env.VERSION }}
+        run: |
+          echo "Building $VERSION"
+          make package
+          #exit 1
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: rpm-package
+          path: pkg/*.rpm
+          retention-days: 5
+
+  deploy:
+    needs: build
+    if: success()
+    runs-on: ubuntu-18.04
+
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout release repo
+        with:
+          ref: 'main'
+          #fetch-depth: '0'
+          #lfs: true
+          #path: 'repo'
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: rpm-package
+          path: pkg/
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+
+      - name: Download files from S3 with AWS CLI
+        run: |
+          mkdir -p rpm/releases/7/x86_64/
+          aws s3 sync s3://nextcloud-yum rpm/
+
+      - name: Generate C7 repo
+        run: |
+          sudo apt install createrepo
+          #cd repo/
+          #git lfs install
+          #git lfs track "*.rpm"
+          #mkdir -p rpm/releases/7/x86_64/
+          cp -a ./pkg/*.rpm rpm/releases/7/x86_64/
+          createrepo rpm/releases/7/x86_64/
+          #git add .
+          #git config --global user.name 'GHA'
+          #git config --global user.email 'mbevc1@users.noreply.github.com'
+          #git commit -am "Automated commit"
+          #git push
+
+      - name: Upload files to S3 with AWS CLI
+        run: |
+          aws s3 sync rpm/ s3://nextcloud-yum
