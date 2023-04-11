@@ -89,7 +89,7 @@ jobs:
           #git lfs track "*.rpm"
           #mkdir -p rpm/releases/7/x86_64/
           cp -a ./pkg/*.rpm rpm/releases/7/x86_64/
-          createrepo rpm/releases/7/x86_64/
+          createrepo_c rpm/releases/7/x86_64/
           #git add .
           #git config --global user.name 'GHA'
           #git config --global user.email 'mbevc1@users.noreply.github.com'
