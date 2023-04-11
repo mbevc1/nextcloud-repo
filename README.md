@@ -1,4 +1,4 @@
-[![Pipeline](https://github.com/mbevc1/nextcloud-repo/actions/workflows/release/badge.svg)](https://github.com/mbevc1/nextcloud-repo/actions/workflows/release.yaml)
+[![Release](https://github.com/mbevc1/nextcloud-repo/actions/workflows/release.yaml/badge.svg)](https://github.com/mbevc1/nextcloud-repo/actions/workflows/release.yaml)
 [![pages-build-deployment](https://github.com/mbevc1/nextcloud-repo/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/mbevc1/nextcloud-repo/actions/workflows/pages/pages-build-deployment)
 
 # nextcloud-repo
