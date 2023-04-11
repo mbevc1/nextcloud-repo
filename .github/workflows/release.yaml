@@ -83,7 +83,7 @@ jobs:
 
       - name: Generate C7 repo
         run: |
-          sudo apt install createrepo
+          sudo apt install createrepo-c
           #cd repo/
           #git lfs install
           #git lfs track "*.rpm"
