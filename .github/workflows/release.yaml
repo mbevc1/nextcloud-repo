@@ -44,7 +44,7 @@ jobs:
           make package
           #exit 1
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: rpm-package
           path: pkg/*.rpm
