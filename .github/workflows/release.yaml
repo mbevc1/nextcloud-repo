@@ -55,8 +55,8 @@ jobs:
           VERSION: ${{ env.VERSION }}
         run: |
           echo "Building ${{ github.event.inputs.version || env.VERSION }}-${{ github.event.inputs.buildNumber }}"
-          exit 1
-          BUILD_NUMBER=${{ env.BUILD_NUMBER }} make package
+          #exit 1
+          BUILD_NUMBER=${{ github.event.inputs.buildNumber || env.BUILD_NUMBER }} make package
           #exit 1
 
       - uses: actions/upload-artifact@v4
