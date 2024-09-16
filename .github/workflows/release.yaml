@@ -46,7 +46,7 @@ jobs:
         env:
           VERSION: ${{ env.VERSION }}
         run: |
-          echo "Building $VERSION-${{ github.event.inputs.buildNumber }}"
+          echo "Building ${{ env.VERSION }}-${{ github.event.inputs.buildNumber }}"
           exit 1
           make package
           #exit 1
