@@ -12,11 +12,19 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
+      version:
+        description: 'Version:'
+        required: true
+        default: '30.0.0'
+        type: string
       buildNumber:
         description: 'Build number:'
         required: true
         default: 1
         type: number
+
+env:
+  BUILD_NUMBER: 2
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -46,9 +54,9 @@ jobs:
         env:
           VERSION: ${{ env.VERSION }}
         run: |
-          echo "Building ${{ env.VERSION }}-${{ github.event.inputs.buildNumber }}"
+          echo "Building ${{ github.event.inputs.version || env.VERSION }}-${{ github.event.inputs.buildNumber }}"
           exit 1
-          make package
+          BUILD_NUMBER=${{ env.BUILD_NUMBER }} make package
           #exit 1
 
       - uses: actions/upload-artifact@v4
