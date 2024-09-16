@@ -52,7 +52,7 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Make package
         env:
-          VERSION: ${{ env.VERSION }}
+          VERSION: ${{ github.event.inputs.version || env.VERSION }}
         run: |
           echo "Building ${{ github.event.inputs.version || env.VERSION }}-${{ github.event.inputs.buildNumber }}"
           #exit 1
