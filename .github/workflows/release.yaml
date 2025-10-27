@@ -59,7 +59,7 @@ jobs:
           BUILD_NUMBER=${{ github.event.inputs.buildNumber || env.BUILD_NUMBER }} make package
           #exit 1
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: rpm-package
           path: pkg/*.rpm
