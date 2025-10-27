@@ -79,7 +79,7 @@ jobs:
           #lfs: true
           #path: 'repo'
 
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v6
         with:
           name: rpm-package
           path: pkg/
