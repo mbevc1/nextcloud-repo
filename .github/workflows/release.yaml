@@ -15,7 +15,7 @@ on:
       version:
         description: 'Version:'
         required: true
-        default: '31.0.9'
+        default: '33.0.0'
         type: string
       buildNumber:
         description: 'Build number:'
@@ -94,9 +94,10 @@ jobs:
       - name: Download files from S3 with AWS CLI
         run: |
           mkdir -p rpm/releases/7/x86_64/
+          mkdir -p rpm/releases/9/x86_64/
           aws s3 sync s3://nextcloud-yum rpm/
 
-      - name: Generate C7 repo
+      - name: Generate Yum repo
         run: |
           sudo apt install createrepo-c
           #cd repo/
@@ -104,7 +105,9 @@ jobs:
           #git lfs track "*.rpm"
           #mkdir -p rpm/releases/7/x86_64/
           cp -a ./pkg/*.rpm rpm/releases/7/x86_64/
+          cp -a ./pkg/*.rpm rpm/releases/9/x86_64/
           createrepo_c rpm/releases/7/x86_64/
+          createrepo_c rpm/releases/9/x86_64/
           #git add .
           #git config --global user.name 'GHA'
           #git config --global user.email 'mbevc1@users.noreply.github.com'
